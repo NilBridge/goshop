@@ -11,6 +11,8 @@ md "tmp/goshop"
 xcopy src "tmp/goshop" /s /e /exclude:%cd%\pack.config
 xcopy package.json "tmp/goshop/" /F
 xcopy index.js "tmp/goshop/" /F
+xcopy LICENSE "tmp/goshop/" /F
+xcopy README.md "tmp/goshop/" /F
 
 cd 7z
 
