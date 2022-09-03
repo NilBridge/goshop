@@ -124,8 +124,8 @@ function getAllShop(xuid = '') {
     return arr;
 }
 
-function queryShop(tableid){
-    return db.prepare(`SELECT * FROM SHOPS WHERE TABLEID = @id;`).bind(tableid).fetch();
+function queryShop(tableid,xuid=''){
+    return db.prepare(`SELECT * FROM SHOPS WHERE TABLEID = @id OR OWNER = @xuid;`).bind([tableid,xuid]).fetch();
 }
 
 function addItem(shopid, item, name, price, count, pic = null) {
@@ -140,7 +140,7 @@ function addItem(shopid, item, name, price, count, pic = null) {
     stmt.fetch();
 }
 
-function remCount(shopid,id,count){
+function remItem(shopid,id,count){
     if(count==0){
         db.prepare(`DELETE FROM ${shopid} WHERE ID = $id;`).bind(id).fetch();
     }else{
@@ -148,6 +148,18 @@ function remCount(shopid,id,count){
     }
 }
 
+function getUser(xuid){
+    return db.prepare(`SELECT * FROM USERS WHERE XUID = $xuid`).bind(xuid).fetch();
+}
+
+function updateShopInfo(tableid,name,desc){
+    db.prepare(`UPDATE SHOPS SET NAME = $name WHERE TABLEID = $id;`).bind([name,tableid]).fetch();
+    db.prepare(`UPDATE SHOPS SET DESC = $desc WHERE TABLEID = $id;`).bind([desc,tableid]).fetch();
+}
+
+function addStar(shopid,num){
+    db.prepare(`UPDATE SHOPS SET STARS = (STARS + @num)/2 WHERE TABLEID = @id`).bind([shopid,num]).fetch();
+}
 
 module.exports = {
     createShop,
@@ -158,5 +170,7 @@ module.exports = {
     checkInput,
     queryItems,
     queryShop,
-    remCount
+    remItem,
+    getUser,
+    updateShopInfo
 }
